@@ -4,7 +4,6 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.http.MediaType;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,12 +24,8 @@ public class IncidentStreamController {
     public Flux<String> streamIncident(
             @RequestParam("rawMessage") String rawMessage,
             @RequestParam(value = "temp", defaultValue = "0.5") Double temp,
-            @RequestParam(value = "maxTokens", defaultValue = "1000") Integer maxTokens,
-            ServerHttpResponse response) {
+            @RequestParam(value = "maxTokens", defaultValue = "1000") Integer maxTokens) {
         
-        // Add header to prevent Nginx from buffering SSE responses
-        response.getHeaders().add("X-Accel-Buffering", "no");
-
         // Build dynamic chat options per request
         OpenAiChatOptions options = OpenAiChatOptions.builder()
                 .withTemperature(temp.floatValue())
